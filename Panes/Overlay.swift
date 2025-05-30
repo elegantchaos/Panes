@@ -40,6 +40,7 @@ struct Overlay: View {
 
   func handleSubmit() {
     isVisible = false
+    model.link = model.link
     focus.wrappedValue = model.layoutID
   }
 }

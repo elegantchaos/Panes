@@ -10,7 +10,13 @@ class ModelStore: ObservableObject {
   var models: [PersistentIdentifier:WebViewModel] = [:]
 
   func model(for id: PersistentIdentifier) -> WebViewModel {
-    models[id, default: WebViewModel(link: "https://elegantchaos.com", layout: id)]
+    if let model = models[id] {
+      return model
+    }
+    
+    let newModel = WebViewModel(link: "https://elegantchaos.com", layout: id)
+    models[id] = newModel
+    return newModel
   }
 
 }

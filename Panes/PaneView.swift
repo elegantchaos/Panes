@@ -11,18 +11,17 @@ import SwiftData
 struct PaneContainer: View {
   let focus: FocusState<PersistentIdentifier?>.Binding
 
-  let pane: LayoutItem
+  @Bindable var pane: LayoutItem
   
   var body: some View {
     
     paneView
-//      .overlay {
-//        if focus.wrappedValue == pane.id {
-//          Rectangle()
-//            .stroke(Color.accentColor, lineWidth: 2)
-//            .cornerRadius(8)
-//        }
-//      }
+      .overlay {
+        if focus.wrappedValue == pane.id {
+          Rectangle()
+            .stroke(Color.accentColor, lineWidth: 3)
+        }
+      }
   }
   
   var paneView: some View {
@@ -30,34 +29,31 @@ struct PaneContainer: View {
       switch pane.kind {
         case .root:
           if let root = pane.children.first {
-            PaneView(pane: root, focus: focus)
+            PaneContainer(focus: focus, pane: root)
           }
+
         case .leaf:
             PaneView(pane: pane, focus: focus)
           
         case .horizontal:
           if let left = pane.children.first, let right = pane.children.last {
-            AnyView(
               HSplit(
                 left: { PaneContainer(focus: focus, pane: left)
                 },
                 right: { PaneContainer(focus: focus, pane: right) })
-            )
           } else {
-            AnyView(HStack {
+            HStack {
               ForEach(pane.children) { pane in PaneContainer(focus: focus, pane: pane) }
-            })
+            }
           }
           
         case .vertical:
           if let top = pane.children.first, let bottom = pane.children.last {
-            AnyView(VSplit(top: { PaneContainer(focus: focus, pane: top) }, bottom: { PaneContainer(focus: focus, pane: bottom) }))
+            VSplit(top: { PaneContainer(focus: focus, pane: top) }, bottom: { PaneContainer(focus: focus, pane: bottom) })
           } else {
-            AnyView(
               VStack {
                 ForEach(pane.children) { pane in PaneContainer(focus: focus, pane: pane) }
               }
-            )
           }
           
       }
@@ -69,7 +65,7 @@ struct PaneContainer: View {
 struct PaneView: View {
   @EnvironmentObject var models: ModelStore
   @Environment(\.modelContext) private var modelContext
-  let pane: LayoutItem
+  @Bindable var pane: LayoutItem
   let focus: FocusState<PersistentIdentifier?>.Binding
 
   var body: some View {
@@ -79,7 +75,6 @@ struct PaneView: View {
         .background(.white)
         .font(.footnote)
     }
-    .focusable()
     .focused(focus, equals: pane.id)
   }
 }

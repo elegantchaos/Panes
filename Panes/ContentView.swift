@@ -13,14 +13,9 @@ struct ContentView: View {
 
   @State var showOverlay = false
   @FocusState var focus: PersistentIdentifier?
-
+  @State var overlayModel: WebViewModel?
+  
   init() {
-    //    let layout = PaneLayout.horizontal([
-    //      .single,
-    //      .vertical([.single, .single]),
-    //    ])
-    //    _layout = .init(initialValue: layout)
-    focus = items.first?.id
   }
 
   @Environment(\.modelContext) private var modelContext
@@ -31,38 +26,45 @@ struct ContentView: View {
     VStack {
       if let root = items.first {
         PaneContainer(focus: $focus, pane: root)
+          .overlay {
+            if showOverlay, let overlayModel {
+              Overlay(
+                isVisible: $showOverlay,
+                model: overlayModel,
+                focus: $focus
+              )
+            }
+          }
       }
-      Text("\(items.count)")
       HStack {
         Button(action: handleToggleOverlay) {
           Text("Overlay")
         }
         .keyboardShortcut(KeyEquivalent("l"), modifiers: [.shift, .command])
-        //
-        //        Button(action: handleSelectNext) {
-        //          Text("Next")
-        //        }
-        //        .keyboardShortcut(.tab)
 
-        if let id = focus?.id {
-          Text("\(id)")
+        Button(action: handleSplitRight) {
+          Text("Right")
         }
-      }
-    }.overlay {
-      if showOverlay, let focus {
-        Overlay(
-          isVisible: $showOverlay,
-          model: models.model(for: focus),
-          focus: $focus
-        )
+
+        Button(action: handleSplitDown) {
+          Text("Down")
+        }
+
+        Text(focusLabel)
       }
     }
   }
 
-  var focussedURL: String {
+  var focussedItem: LayoutItem? {
+    guard let focus, let item = items.first(where: { $0.id == focus }) else {
+      return nil
+    }
+    return item
+  }
 
-    if let focus {
-      return models.model(for: focus).link
+  var focusLabel: String {
+    if let item = focussedItem {
+      return "\(item.kind) \(item.id.id)"
     } else {
       return ""
     }
@@ -73,7 +75,42 @@ struct ContentView: View {
   }
 
   func handleToggleOverlay() {
-    showOverlay.toggle()
+    if let focus {
+      if !showOverlay {
+        overlayModel = models.model(for: focus)
+      }
+      showOverlay.toggle()
+    }
+  }
+
+  func handleSplitRight() {
+    if let item = focussedItem {
+      if item.kind == .leaf {
+        let originalLink = models.model(for: item.id).link
+        let c1 = LayoutItem(.leaf)
+        models.model(for: c1.id).link = originalLink
+        let c2 = LayoutItem(.leaf)
+        item.kind = .horizontal
+        item.children = [c1, c2]
+        try? modelContext.save()
+        focus = c2.id
+      }
+    }
+  }
+
+  func handleSplitDown() {
+    if let item = focussedItem {
+      if item.kind == .leaf {
+        let originalLink = models.model(for: item.id).link
+        let c1 = LayoutItem(.leaf)
+        models.model(for: c1.id).link = originalLink
+        let c2 = LayoutItem(.leaf)
+        item.kind = .vertical
+        item.children = [c1, c2]
+        try? modelContext.save()
+        focus = c2.id
+      }
+    }
   }
 
   //  func handleSelectNext() {
