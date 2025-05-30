@@ -5,19 +5,50 @@
 
 import Foundation
 import SwiftUICore
+import SplitView
 
 struct PaneContainer: View {
   @EnvironmentObject var nav: NavigationState
   let pane: PaneLayout
   
   var body: some View {
-    pane.body
+    
+    paneView
       .overlay {
         if nav.selection == pane.id {
           Rectangle()
             .stroke(Color.blue, lineWidth: 2)
         }
       }
+  }
+  
+  var paneView: some View {
+    switch pane.kind {
+      case .single:
+        AnyView(PaneView(pane: pane))
+        
+      case .horizontal:
+          if let left = pane.children.first, let right = pane.children.last {
+            AnyView(HSplit(left: { PaneContainer(pane: left) }, right: { PaneContainer(pane: right) }))
+          } else {
+            AnyView(HStack {
+              ForEach(pane.children) { pane in PaneContainer(pane: pane) }
+            })
+          }
+        
+      case .vertical:
+        if let top = pane.children.first, let bottom = pane.children.last {
+          AnyView(VSplit(top: { PaneContainer(pane: top) }, bottom: { PaneContainer(pane: bottom) }))
+        } else {
+          AnyView(
+            VStack {
+              ForEach(pane.children) { pane in PaneContainer(pane: pane) }
+            }
+          )
+        }
+        
+    }
+
   }
 }
 
