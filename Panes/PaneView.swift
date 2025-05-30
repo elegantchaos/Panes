@@ -19,6 +19,7 @@ struct PaneContainer: View {
 //        if focus.wrappedValue == pane.id {
 //          Rectangle()
 //            .stroke(Color.accentColor, lineWidth: 2)
+//            .cornerRadius(8)
 //        }
 //      }
   }
@@ -70,7 +71,9 @@ struct PaneView: View {
       WebView(viewModel: pane.model)
       Text(pane.id.uuidString)
         .background(.white)
+        .font(.footnote)
     }
+    .focusable()
     .focused(focus, equals: pane.id)
   }
 }
