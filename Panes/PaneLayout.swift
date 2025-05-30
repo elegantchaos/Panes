@@ -49,6 +49,18 @@ struct PaneLayout: Identifiable {
     return results
   }
   
+  func layoutWithID(_ id: UUID?) -> PaneLayout? {
+    if self.id == id {
+      return self
+    }
+    for child in children {
+      if let found = child.layoutWithID(id) {
+        return found
+      }
+    }
+    return nil
+  }
+  
   func nextSelectionAfter(_ id: UUID) -> UUID? {
     let items = contentDepthFirst()
     if let index = items.firstIndex(of: id) {

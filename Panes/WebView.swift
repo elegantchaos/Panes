@@ -25,6 +25,9 @@ struct WebView: NSViewRepresentable {
   }
   
   func updateNSView(_ webView: WKWebView, context: Context) {
+    if viewModel.link != webView.url?.absoluteString ?? "" {
+      webView.load(URLRequest(url: URL(string: viewModel.link)!))
+    }
   }
   
   public func makeCoordinator() -> Coordinator {
@@ -40,11 +43,13 @@ struct WebView: NSViewRepresentable {
     }
     
     public func webView(_: WKWebView, didFail: WKNavigation!, withError: Error) {
-      
+      print("blah")
+
     }
     
     public func webView(_: WKWebView, didFailProvisionalNavigation: WKNavigation!, withError: Error) {
-      
+      print("blah")
+
     }
     
     //After the webpage is loaded, assign the data in WebViewModel class
@@ -55,7 +60,7 @@ struct WebView: NSViewRepresentable {
     }
     
     public func webView(_ webView: WKWebView, didStartProvisionalNavigation navigation: WKNavigation!) {
-      
+      print("blah")
     }
     
     public func webView(_ webView: WKWebView, decidePolicyFor navigationAction: WKNavigationAction, decisionHandler: @escaping (WKNavigationActionPolicy) -> Void) {

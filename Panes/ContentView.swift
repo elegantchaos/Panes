@@ -20,7 +20,7 @@ struct ContentView: View {
       .single,
       .vertical([.single, .single]),
     ])
-    nav.selection = layout.id
+    nav.selection = layout.nextSelectionAfter(layout.id)
 
     _layout = .init(initialValue: layout)
     self.nav = nav
@@ -47,7 +47,7 @@ struct ContentView: View {
       }
     }.overlay {
       if showOverlay {
-        Overlay(layout: $layout)
+        Overlay(layout: $layout, url: layout.layoutWithID(nav.selection)?.model.link ?? "")
       }
     }
     .environmentObject(nav)

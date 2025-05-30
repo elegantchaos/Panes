@@ -8,10 +8,12 @@ import SwiftUI
 
 struct Overlay: View {
   @Binding var layout: PaneLayout
-  @State var url: String = "Overlay"
+  @EnvironmentObject var nav: NavigationState
+  @State var url: String
 
   var body: some View {
     TextField("URL", text: $url)
+      .onSubmit(handleSubmit)
       .textFieldStyle(CustomTextFieldStyle())
       .padding()
       .frame(minWidth: 100, maxWidth: 1000)
@@ -21,6 +23,12 @@ struct Overlay: View {
           .cornerRadius(8)
           .padding(.horizontal)
       )
+  }
+  
+  func handleSubmit() {
+    if let pane = layout.layoutWithID(nav.selection) {
+      pane.model.link = url
+    }
   }
 }
 
@@ -40,7 +48,7 @@ struct CustomTextFieldStyle: TextFieldStyle {
   ])
 
   VStack {
-    Overlay(layout: $layout)
+    Overlay(layout: $layout, url: "https://elegantchaos.com")
   }
   .frame(width: 640, height: 480)
 }
