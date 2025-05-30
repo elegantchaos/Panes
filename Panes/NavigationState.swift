@@ -4,13 +4,10 @@
 // -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
 
 import Foundation
-import SwiftUICore
 
-struct Pane: View {
-  @Environment(\.modelContext) private var modelContext
-  @State private var model = WebViewModel(link: "https://elegantchaos.com")
+class NavigationState: ObservableObject {
+  @Published var selection: UUID?
   
-  var body: some View {
-    WebView(viewModel: model)
+  init() {
   }
 }

@@ -11,7 +11,8 @@ import SwiftUICore
 struct PaneLayout: Identifiable {
   let id = UUID()
   let kind: Kind
-  let content: [PaneLayout]
+  let model: WebViewModel
+  let children: [PaneLayout]
   
   enum Kind {
     case single
@@ -21,7 +22,8 @@ struct PaneLayout: Identifiable {
   
   init(_ layout: Kind = .single, content: [PaneLayout] = []) {
     self.kind = layout
-    self.content = content
+    self.children = content
+    self.model = WebViewModel(link: "https://elegantchaos.com")
   }
   
   static var single: PaneLayout {
@@ -36,22 +38,42 @@ struct PaneLayout: Identifiable {
     .init(.vertical, content: content)
   }
   
+  func contentDepthFirst() -> [UUID] {
+    var results : [UUID] = []
+    if kind == .single {
+      results.append(id)
+    }
+    for child in children {
+      results.append(contentsOf: child.contentDepthFirst())
+    }
+    return results
+  }
+  
+  func nextSelectionAfter(_ id: UUID) -> UUID? {
+    let items = contentDepthFirst()
+    if let index = items.firstIndex(of: id) {
+      return items[(index + 1) % items.count]
+    } else {
+      return items.first
+    }
+  }
+  
   var body: some View {
     switch kind {
       case .single:
-        AnyView(Pane())
+        AnyView(PaneView(pane: self))
         
       case .horizontal:
         AnyView(
           HStack {
-            ForEach(content) { pane in pane.body }
+            ForEach(children) { pane in PaneContainer(pane: pane) }
           }
         )
         
       case .vertical:
         AnyView(
           VStack {
-            ForEach(content) { pane in pane.body }
+            ForEach(children) { pane in PaneContainer(pane: pane) }
           }
         )
         
