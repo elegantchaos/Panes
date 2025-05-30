@@ -14,11 +14,34 @@ struct ContentView: View {
     .vertical([.single, .single]),
   ])
 
+  @State var showOverlay = false
+  
   //  @Environment(\.modelContext) private var modelContext
   //  @Query private var items: [Item]
 
   var body: some View {
-    layout.body
+    VStack {
+      layout.body
+      Button(action: handleToggleOverlay) {
+        Text("Overlay")
+      }
+      .keyboardShortcut(KeyEquivalent("l"), modifiers: [.shift, .command])
+    }.overlay {
+      if showOverlay {
+        Text("Overlay")
+          .font(.headline)
+          .padding(20)
+          .background(
+            Rectangle()
+              .fill(Color.gray)
+              .cornerRadius(8)
+          )
+      }
+    }
+  }
+  
+  func handleToggleOverlay() {
+    showOverlay.toggle()
   }
 
   //  private func addItem() {
