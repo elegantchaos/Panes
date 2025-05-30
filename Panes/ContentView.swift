@@ -24,18 +24,11 @@ struct ContentView: View {
       layout.body
       Button(action: handleToggleOverlay) {
         Text("Overlay")
-      }
+      }.hidden()
       .keyboardShortcut(KeyEquivalent("l"), modifiers: [.shift, .command])
     }.overlay {
       if showOverlay {
-        Text("Overlay")
-          .font(.headline)
-          .padding(20)
-          .background(
-            Rectangle()
-              .fill(Color.gray)
-              .cornerRadius(8)
-          )
+        Overlay(layout: $layout)
       }
     }
   }
