@@ -15,20 +15,19 @@ struct PaneContainer: View {
   var body: some View {
     
     paneView
-      .overlay {
-        if focus.wrappedValue == pane.id {
-          Rectangle()
-            .stroke(Color.accentColor, lineWidth: 2)
-        }
-      }
+//      .overlay {
+//        if focus.wrappedValue == pane.id {
+//          Rectangle()
+//            .stroke(Color.accentColor, lineWidth: 2)
+//        }
+//      }
   }
   
   var paneView: some View {
     switch pane.kind {
       case .single:
         AnyView(
-          PaneView(pane: pane)
-            .focused(focus, equals: pane.id)
+          PaneView(pane: pane, focus: focus)
         )
         
       case .horizontal:
@@ -64,12 +63,14 @@ struct PaneContainer: View {
 struct PaneView: View {
   @Environment(\.modelContext) private var modelContext
   let pane: PaneLayout
-  
+  let focus: FocusState<UUID?>.Binding
+
   var body: some View {
     ZStack(alignment: .bottomTrailing) {
       WebView(viewModel: pane.model)
       Text(pane.id.uuidString)
         .background(.white)
     }
+    .focused(focus, equals: pane.id)
   }
 }

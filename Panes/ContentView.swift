@@ -34,17 +34,18 @@ struct ContentView: View {
           Text("Overlay")
         }
         .keyboardShortcut(KeyEquivalent("l"), modifiers: [.shift, .command])
-
-        Button(action: handleSelectNext) {
-          Text("Next")
-        }
-        .keyboardShortcut(.tab)
+//
+//        Button(action: handleSelectNext) {
+//          Text("Next")
+//        }
+//        .keyboardShortcut(.tab)
 
         Text(focus?.uuidString ?? "No selection")
       }
     }.overlay {
       if showOverlay {
         Overlay(
+          isVisible: $showOverlay,
           layout: $layout,
           url: layout.layoutWithID(focus)?.model.link ?? "",
           focus: $focus
