@@ -4,26 +4,24 @@
 // -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
 
 import Foundation
+import SwiftData
 import SwiftUI
 
 struct Overlay: View {
   @Namespace var overlayFocusNamespace
   @Binding var isVisible: Bool
-  @Binding var layout: PaneLayout
-  @State var url: String
-  let focus: FocusState<UUID?>.Binding
-  @State var focussedPane: UUID?
-  
+  @ObservedObject var model: WebViewModel
+  let focus: FocusState<PersistentIdentifier?>.Binding
+
   enum OverlayFocus {
     case url
   }
-  
+
   @FocusState var overlayFocus: OverlayFocus?
-  
-  
+
   var body: some View {
     VStack {
-      TextField("URL", text: $url)
+      TextField("URL", text: $model.link)
         .focused($overlayFocus, equals: .url)
         .onSubmit(handleSubmit)
         .textFieldStyle(CustomTextFieldStyle())
@@ -38,17 +36,11 @@ struct Overlay: View {
 
     }
     .focusScope(overlayFocusNamespace)
-    .onAppear {
-      focussedPane = focus.wrappedValue
-    }
   }
-  
+
   func handleSubmit() {
-    if let pane = layout.layoutWithID(focussedPane) {
-      pane.model.link = url
-      isVisible = false
-      focus.wrappedValue = focussedPane
-    }
+    isVisible = false
+    focus.wrappedValue = model.layoutID
   }
 }
 
@@ -62,18 +54,18 @@ struct CustomTextFieldStyle: TextFieldStyle {
 }
 
 #Preview {
-  @Previewable @State var layout: PaneLayout = .horizontal([
-    .single,
-    .vertical([.single, .single]),
-  ])
+//  @Previewable @State var layout: PaneLayout = .horizontal([
+//    .single,
+//    .vertical([.single, .single]),
+//  ])
 
-  @FocusState var focus: UUID?
-  
+  @Previewable @State var layout = LayoutItem()
+  @FocusState var focus: PersistentIdentifier?
+
   VStack {
     Overlay(
       isVisible: .constant(true),
-      layout: $layout,
-      url: "https://elegantchaos.com",
+      model: WebViewModel(link: "https://elegantchaos.com", layout: layout.id),
       focus: $focus
     )
   }

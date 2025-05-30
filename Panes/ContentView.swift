@@ -9,63 +9,81 @@ import SwiftData
 import SwiftUI
 
 struct ContentView: View {
-  @State var layout: PaneLayout
+  //  @State var layout: PaneLayout
 
   @State var showOverlay = false
-  @FocusState var focus: UUID?
-  
+  @FocusState var focus: PersistentIdentifier?
+
   init() {
-    let layout = PaneLayout.horizontal([
-      .single,
-      .vertical([.single, .single]),
-    ])
-    _layout = .init(initialValue: layout)
-    focus = layout.nextSelectionAfter(layout.id)
+    //    let layout = PaneLayout.horizontal([
+    //      .single,
+    //      .vertical([.single, .single]),
+    //    ])
+    //    _layout = .init(initialValue: layout)
+    focus = items.first?.id
   }
-  
-  //  @Environment(\.modelContext) private var modelContext
-  //  @Query private var items: [Item]
+
+  @Environment(\.modelContext) private var modelContext
+  @EnvironmentObject var models: ModelStore
+  @Query private var items: [LayoutItem]
 
   var body: some View {
     VStack {
-      PaneContainer(focus: $focus, pane: layout)
+      if let root = items.first {
+        PaneContainer(focus: $focus, pane: root)
+      }
+      Text("\(items.count)")
       HStack {
         Button(action: handleToggleOverlay) {
           Text("Overlay")
         }
         .keyboardShortcut(KeyEquivalent("l"), modifiers: [.shift, .command])
-//
-//        Button(action: handleSelectNext) {
-//          Text("Next")
-//        }
-//        .keyboardShortcut(.tab)
+        //
+        //        Button(action: handleSelectNext) {
+        //          Text("Next")
+        //        }
+        //        .keyboardShortcut(.tab)
 
-        Text(focus?.uuidString ?? "No selection")
+        if let id = focus?.id {
+          Text("\(id)")
+        }
       }
     }.overlay {
-      if showOverlay {
+      if showOverlay, let focus {
         Overlay(
           isVisible: $showOverlay,
-          layout: $layout,
-          url: layout.layoutWithID(focus)?.model.link ?? "",
+          model: models.model(for: focus),
           focus: $focus
         )
       }
     }
   }
 
+  var focussedURL: String {
+
+    if let focus {
+      return models.model(for: focus).link
+    } else {
+      return ""
+    }
+  }
+
+  var root: LayoutItem? {
+    items.first(where: { $0.kind == .root })
+  }
+
   func handleToggleOverlay() {
     showOverlay.toggle()
   }
 
-  func handleSelectNext() {
-    if let current = focus {
-      focus = layout.nextSelectionAfter(current)
-    } else {
-      focus = layout.id
-    }
-  }
-  
+  //  func handleSelectNext() {
+  //    if let current = focus {
+  //      focus = layout.nextSelectionAfter(current)
+  //    } else {
+  //      focus = layout.id
+  //    }
+  //  }
+
   //  private func addItem() {
   //    withAnimation {
   //      let newItem = Item(timestamp: Date())
@@ -84,5 +102,5 @@ struct ContentView: View {
 
 #Preview {
   ContentView()
-    .modelContainer(for: Item.self, inMemory: true)
+    .modelContainer(for: LayoutItem.self, inMemory: true)
 }

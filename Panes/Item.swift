@@ -9,10 +9,20 @@ import Foundation
 import SwiftData
 
 @Model
-final class Item {
-    var timestamp: Date
-    
-    init(timestamp: Date) {
-        self.timestamp = timestamp
-    }
+final class LayoutItem {
+  enum Kind: Codable {
+    case root
+    case leaf
+    case horizontal
+    case vertical
+  }
+
+  var kind: Kind
+  var children: [LayoutItem]
+
+  init(_ layout: Kind = .leaf, content: [LayoutItem] = []) {
+    self.kind = layout
+    self.children = content
+  }
 }
+

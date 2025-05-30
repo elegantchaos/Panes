@@ -6,11 +6,12 @@
 import Foundation
 import SwiftUI
 import SplitView
+import SwiftData
 
 struct PaneContainer: View {
-  let focus: FocusState<UUID?>.Binding
+  let focus: FocusState<PersistentIdentifier?>.Binding
 
-  let pane: PaneLayout
+  let pane: LayoutItem
   
   var body: some View {
     
@@ -25,13 +26,16 @@ struct PaneContainer: View {
   }
   
   var paneView: some View {
-    switch pane.kind {
-      case .single:
-        AnyView(
-          PaneView(pane: pane, focus: focus)
-        )
-        
-      case .horizontal:
+    Group {
+      switch pane.kind {
+        case .root:
+          if let root = pane.children.first {
+            PaneView(pane: root, focus: focus)
+          }
+        case .leaf:
+            PaneView(pane: pane, focus: focus)
+          
+        case .horizontal:
           if let left = pane.children.first, let right = pane.children.last {
             AnyView(
               HSplit(
@@ -44,32 +48,34 @@ struct PaneContainer: View {
               ForEach(pane.children) { pane in PaneContainer(focus: focus, pane: pane) }
             })
           }
-        
-      case .vertical:
-        if let top = pane.children.first, let bottom = pane.children.last {
-          AnyView(VSplit(top: { PaneContainer(focus: focus, pane: top) }, bottom: { PaneContainer(focus: focus, pane: bottom) }))
-        } else {
-          AnyView(
-            VStack {
-              ForEach(pane.children) { pane in PaneContainer(focus: focus, pane: pane) }
-            }
-          )
-        }
-        
+          
+        case .vertical:
+          if let top = pane.children.first, let bottom = pane.children.last {
+            AnyView(VSplit(top: { PaneContainer(focus: focus, pane: top) }, bottom: { PaneContainer(focus: focus, pane: bottom) }))
+          } else {
+            AnyView(
+              VStack {
+                ForEach(pane.children) { pane in PaneContainer(focus: focus, pane: pane) }
+              }
+            )
+          }
+          
+      }
+      
     }
-
   }
 }
 
 struct PaneView: View {
+  @EnvironmentObject var models: ModelStore
   @Environment(\.modelContext) private var modelContext
-  let pane: PaneLayout
-  let focus: FocusState<UUID?>.Binding
+  let pane: LayoutItem
+  let focus: FocusState<PersistentIdentifier?>.Binding
 
   var body: some View {
     ZStack(alignment: .bottomTrailing) {
-      WebView(viewModel: pane.model)
-      Text(pane.id.uuidString)
+      WebView(viewModel: models.model(for: pane.id))
+      Text("\(pane.id)")
         .background(.white)
         .font(.footnote)
     }
@@ -77,3 +83,4 @@ struct PaneView: View {
     .focused(focus, equals: pane.id)
   }
 }
+

@@ -1,14 +1,17 @@
 import SwiftUI
+import SwiftData
 import WebKit
 
 class WebViewModel: ObservableObject {
+  let layoutID: PersistentIdentifier
   @Published var link: String
   @Published var didFinishLoading: Bool = false
   @Published var pageTitle: String
   
-  init (link: String) {
+  init (link: String, layout: PersistentIdentifier) {
     self.link = link
     self.pageTitle = ""
+    self.layoutID = layout
   }
 }
 
