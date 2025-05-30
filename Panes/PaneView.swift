@@ -4,20 +4,21 @@
 // -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
 
 import Foundation
-import SwiftUICore
+import SwiftUI
 import SplitView
 
 struct PaneContainer: View {
-  @EnvironmentObject var nav: NavigationState
+  let focus: FocusState<UUID?>.Binding
+
   let pane: PaneLayout
   
   var body: some View {
     
     paneView
       .overlay {
-        if nav.selection == pane.id {
+        if focus.wrappedValue == pane.id {
           Rectangle()
-            .stroke(Color.blue, lineWidth: 2)
+            .stroke(Color.accentColor, lineWidth: 2)
         }
       }
   }
@@ -25,24 +26,32 @@ struct PaneContainer: View {
   var paneView: some View {
     switch pane.kind {
       case .single:
-        AnyView(PaneView(pane: pane))
+        AnyView(
+          PaneView(pane: pane)
+            .focused(focus, equals: pane.id)
+        )
         
       case .horizontal:
           if let left = pane.children.first, let right = pane.children.last {
-            AnyView(HSplit(left: { PaneContainer(pane: left) }, right: { PaneContainer(pane: right) }))
+            AnyView(
+              HSplit(
+                left: { PaneContainer(focus: focus, pane: left)
+                },
+                right: { PaneContainer(focus: focus, pane: right) })
+            )
           } else {
             AnyView(HStack {
-              ForEach(pane.children) { pane in PaneContainer(pane: pane) }
+              ForEach(pane.children) { pane in PaneContainer(focus: focus, pane: pane) }
             })
           }
         
       case .vertical:
         if let top = pane.children.first, let bottom = pane.children.last {
-          AnyView(VSplit(top: { PaneContainer(pane: top) }, bottom: { PaneContainer(pane: bottom) }))
+          AnyView(VSplit(top: { PaneContainer(focus: focus, pane: top) }, bottom: { PaneContainer(focus: focus, pane: bottom) }))
         } else {
           AnyView(
             VStack {
-              ForEach(pane.children) { pane in PaneContainer(pane: pane) }
+              ForEach(pane.children) { pane in PaneContainer(focus: focus, pane: pane) }
             }
           )
         }

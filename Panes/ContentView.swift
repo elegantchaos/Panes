@@ -10,20 +10,17 @@ import SwiftUI
 
 struct ContentView: View {
   @State var layout: PaneLayout
-  let nav: NavigationState
 
   @State var showOverlay = false
-
+  @FocusState var focus: UUID?
+  
   init() {
-    let nav = NavigationState()
     let layout = PaneLayout.horizontal([
       .single,
       .vertical([.single, .single]),
     ])
-    nav.selection = layout.nextSelectionAfter(layout.id)
-
     _layout = .init(initialValue: layout)
-    self.nav = nav
+    focus = layout.nextSelectionAfter(layout.id)
   }
   
   //  @Environment(\.modelContext) private var modelContext
@@ -31,7 +28,7 @@ struct ContentView: View {
 
   var body: some View {
     VStack {
-      PaneContainer(pane: layout)
+      PaneContainer(focus: $focus, pane: layout)
       HStack {
         Button(action: handleToggleOverlay) {
           Text("Overlay")
@@ -43,14 +40,17 @@ struct ContentView: View {
         }
         .keyboardShortcut(.tab)
 
-        Text(nav.selection?.uuidString ?? "No selection")
+        Text(focus?.uuidString ?? "No selection")
       }
     }.overlay {
       if showOverlay {
-        Overlay(layout: $layout, url: layout.layoutWithID(nav.selection)?.model.link ?? "")
+        Overlay(
+          layout: $layout,
+          url: layout.layoutWithID(focus)?.model.link ?? "",
+          focus: $focus
+        )
       }
     }
-    .environmentObject(nav)
   }
 
   func handleToggleOverlay() {
@@ -58,10 +58,10 @@ struct ContentView: View {
   }
 
   func handleSelectNext() {
-    if let current = nav.selection {
-      nav.selection = layout.nextSelectionAfter(current)
+    if let current = focus {
+      focus = layout.nextSelectionAfter(current)
     } else {
-      nav.selection = layout.id
+      focus = layout.id
     }
   }
   

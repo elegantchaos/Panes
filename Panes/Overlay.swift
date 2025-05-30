@@ -8,8 +8,8 @@ import SwiftUI
 
 struct Overlay: View {
   @Binding var layout: PaneLayout
-  @EnvironmentObject var nav: NavigationState
   @State var url: String
+  let focus: FocusState<UUID?>.Binding
 
   var body: some View {
     TextField("URL", text: $url)
@@ -26,7 +26,7 @@ struct Overlay: View {
   }
   
   func handleSubmit() {
-    if let pane = layout.layoutWithID(nav.selection) {
+    if let pane = layout.layoutWithID(focus.wrappedValue) {
       pane.model.link = url
     }
   }
@@ -47,8 +47,10 @@ struct CustomTextFieldStyle: TextFieldStyle {
     .vertical([.single, .single]),
   ])
 
+  @FocusState var focus: UUID?
+  
   VStack {
-    Overlay(layout: $layout, url: "https://elegantchaos.com")
+    Overlay(layout: $layout, url: "https://elegantchaos.com", focus: $focus)
   }
   .frame(width: 640, height: 480)
 }

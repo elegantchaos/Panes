@@ -7,7 +7,6 @@ import Foundation
 import SwiftUICore
 
 
-
 struct PaneLayout: Identifiable {
   let id = UUID()
   let kind: Kind
@@ -67,28 +66,6 @@ struct PaneLayout: Identifiable {
       return items[(index + 1) % items.count]
     } else {
       return items.first
-    }
-  }
-  
-  var body: some View {
-    switch kind {
-      case .single:
-        AnyView(PaneView(pane: self))
-        
-      case .horizontal:
-        AnyView(
-          HStack {
-            ForEach(children) { pane in PaneContainer(pane: pane) }
-          }
-        )
-        
-      case .vertical:
-        AnyView(
-          VStack {
-            ForEach(children) { pane in PaneContainer(pane: pane) }
-          }
-        )
-        
     }
   }
 }
