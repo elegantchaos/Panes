@@ -41,7 +41,7 @@ struct Overlay: View {
   func handleSubmit() {
     isVisible = false
     model.link = model.link
-    focus.wrappedValue = model.layoutID
+    focus.wrappedValue = model.layout.id
   }
 }
 
@@ -66,7 +66,7 @@ struct CustomTextFieldStyle: TextFieldStyle {
   VStack {
     Overlay(
       isVisible: .constant(true),
-      model: WebViewModel(link: "https://elegantchaos.com", layout: layout.id),
+      model: WebViewModel(link: "https://elegantchaos.com", layout: layout),
       focus: $focus
     )
   }

@@ -4,78 +4,80 @@
 // -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
 
 import Foundation
-import SwiftUI
 import SplitView
 import SwiftData
-
-struct PaneContainer: View {
-  let focus: FocusState<PersistentIdentifier?>.Binding
-
-  @Bindable var pane: LayoutItem
-  
-  var body: some View {
-    
-    paneView
-      .overlay {
-        if focus.wrappedValue == pane.id {
-          Rectangle()
-            .stroke(Color.accentColor, lineWidth: 3)
-        }
-      }
-  }
-  
-  var paneView: some View {
-    Group {
-      switch pane.kind {
-        case .root:
-          if let root = pane.children.first {
-            PaneContainer(focus: focus, pane: root)
-          }
-
-        case .leaf:
-            PaneView(pane: pane, focus: focus)
-          
-        case .horizontal:
-          if let left = pane.children.first, let right = pane.children.last {
-              HSplit(
-                left: { PaneContainer(focus: focus, pane: left)
-                },
-                right: { PaneContainer(focus: focus, pane: right) })
-          } else {
-            HStack {
-              ForEach(pane.children) { pane in PaneContainer(focus: focus, pane: pane) }
-            }
-          }
-          
-        case .vertical:
-          if let top = pane.children.first, let bottom = pane.children.last {
-            VSplit(top: { PaneContainer(focus: focus, pane: top) }, bottom: { PaneContainer(focus: focus, pane: bottom) })
-          } else {
-              VStack {
-                ForEach(pane.children) { pane in PaneContainer(focus: focus, pane: pane) }
-              }
-          }
-          
-      }
-      
-    }
-  }
-}
+import SwiftUI
 
 struct PaneView: View {
   @EnvironmentObject var models: ModelStore
   @Environment(\.modelContext) private var modelContext
-  @Bindable var pane: LayoutItem
+  @ObservedObject var model: WebViewModel
+  @State var modifiers: EventModifiers = []
   let focus: FocusState<PersistentIdentifier?>.Binding
 
   var body: some View {
-    ZStack(alignment: .bottomTrailing) {
-      WebView(viewModel: models.model(for: pane.id))
-      Text("\(pane.id)")
-        .background(.white)
-        .font(.footnote)
+    let isOptionDown = modifiers.contains(.option)
+    let isCommandDown = modifiers.contains(.command)
+    let isPanelSelected = focus.wrappedValue == model.layout.id
+
+    return
+      WebView(viewModel: model)
+      .focused(focus, equals: model.layout.id)
+      .onModifierKeysChanged { before, after in
+        modifiers = after
+      }
+      .overlay(alignment: .bottomTrailing) {
+        Text(model.label)
+          .background(.white)
+          .font(.footnote)
+      }
+      .overlay {
+        if isPanelSelected && isCommandDown {
+          Rectangle()
+            .stroke(Color.accentColor, lineWidth: 3)
+        }
+      }
+      .overlay(alignment: .topTrailing) {
+        if isPanelSelected && isCommandDown {
+          Button(action: handleSplit) {
+            Image(
+              systemName: isOptionDown
+                ? "rectangle.split.1x2" : "rectangle.split.2x1"
+            )
+          }
+          .padding()
+          .keyboardShortcut("|", modifiers: [.command])
+          .buttonStyle(.borderless)
+        }
+      }
+      .overlay(alignment: .topLeading) {
+        if isPanelSelected && isCommandDown {
+          Button(action: handleSplit) {
+            Image(systemName: "x.circle")
+          }
+          .padding()
+          .keyboardShortcut(.delete, modifiers: [.command])
+          .buttonStyle(.borderless)
+        }
+      }
+
+    func handleSplit() {
+      let optionDown = modifiers.contains(.option)
+      withAnimation {
+        if let item = models.split(
+          model.layout,
+          direction: optionDown ? .vertical : .horizontal
+        ) {
+          focus.wrappedValue = item.id
+        }
+      }
     }
-    .focused(focus, equals: pane.id)
+
+    func handleDelete() {
+      withAnimation {
+        models.delete(model.layout)
+      }
+    }
+
   }
 }
-

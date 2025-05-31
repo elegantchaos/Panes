@@ -42,15 +42,9 @@ struct ContentView: View {
         }
         .keyboardShortcut(KeyEquivalent("l"), modifiers: [.shift, .command])
 
-        Button(action: handleSplitRight) {
-          Text("Right")
+        if let item = focussedItem {
+          Text(models.model(for: item).label)
         }
-
-        Button(action: handleSplitDown) {
-          Text("Down")
-        }
-
-        Text(focusLabel)
       }
     }
   }
@@ -75,41 +69,23 @@ struct ContentView: View {
   }
 
   func handleToggleOverlay() {
-    if let focus {
+    if let item = focussedItem {
       if !showOverlay {
-        overlayModel = models.model(for: focus)
+        overlayModel = models.model(for: item)
       }
       showOverlay.toggle()
     }
   }
 
   func handleSplitRight() {
-    if let item = focussedItem {
-      if item.kind == .leaf {
-        let originalLink = models.model(for: item.id).link
-        let c1 = LayoutItem(.leaf)
-        models.model(for: c1.id).link = originalLink
-        let c2 = LayoutItem(.leaf)
-        item.kind = .horizontal
-        item.children = [c1, c2]
-        try? modelContext.save()
-        focus = c2.id
-      }
+    if let item = models.split(focussedItem, direction: .horizontal) {
+      focus = item.id
     }
   }
 
   func handleSplitDown() {
-    if let item = focussedItem {
-      if item.kind == .leaf {
-        let originalLink = models.model(for: item.id).link
-        let c1 = LayoutItem(.leaf)
-        models.model(for: c1.id).link = originalLink
-        let c2 = LayoutItem(.leaf)
-        item.kind = .vertical
-        item.children = [c1, c2]
-        try? modelContext.save()
-        focus = c2.id
-      }
+    if let item = models.split(focussedItem, direction: .vertical) {
+      focus = item.id
     }
   }
 

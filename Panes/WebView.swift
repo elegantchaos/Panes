@@ -3,15 +3,19 @@ import SwiftData
 import WebKit
 
 class WebViewModel: ObservableObject {
-  let layoutID: PersistentIdentifier
   @Published var link: String
   @Published var didFinishLoading: Bool = false
   @Published var pageTitle: String
-  
-  init (link: String, layout: PersistentIdentifier) {
+  @Published var layout: LayoutItem
+
+  init (link: String, layout: LayoutItem) {
     self.link = link
     self.pageTitle = ""
-    self.layoutID = layout
+    self.layout = layout
+  }
+  
+  var label: String {
+    pageTitle
   }
 }
 
@@ -20,6 +24,7 @@ struct WebView: NSViewRepresentable {
 
   private let webView: WKWebView = WKWebView()
 
+  
   func makeNSView(context: Context) -> WKWebView {
     webView.navigationDelegate = context.coordinator
     webView.uiDelegate = context.coordinator as? WKUIDelegate
