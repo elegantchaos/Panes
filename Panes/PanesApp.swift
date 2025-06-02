@@ -90,7 +90,7 @@ struct PanesApp: App {
     let work = SpaceItem(name: "Work", windows: [workWindow])
     context.insert(workRoot)
     context.insert(workWindow)
-    context.insert(home)
+    context.insert(work)
 
     for link in ["elegantchaos.com", "apple.com", "bbc.co.uk", "github.com"] {
       if let url = URL(string: "https:/\(link)"), let name = link.split(separator: ".").first {

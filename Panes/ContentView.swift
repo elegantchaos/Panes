@@ -16,6 +16,7 @@ struct ContentView: View {
   @Binding var showOverlay: Bool
   @FocusState var focus: LayoutItem?
   @State var overlayModel: WebViewModel?
+  @State var activeSpace: SpaceItem?
 
   @Environment(\.modelContext) private var modelContext
   @EnvironmentObject var models: ModelStore
@@ -30,6 +31,7 @@ struct ContentView: View {
             if showOverlay, let overlayModel {
               Overlay(
                 isVisible: $showOverlay,
+                activeSpace: $activeSpace,
                 model: overlayModel,
                 focus: $focus
               )
@@ -54,7 +56,8 @@ struct ContentView: View {
   }
 
   var root: LayoutItem? {
-    spaces.first?.windows.first?.root
+    let space = activeSpace ?? spaces.first
+    return space?.windows.first?.root
   }
 
   func handleToggleOverlay() {

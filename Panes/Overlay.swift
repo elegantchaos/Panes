@@ -10,6 +10,7 @@ import SwiftUI
 struct Overlay: View {
   @Query private var spaces: [SpaceItem]
   @Binding var isVisible: Bool
+  @Binding var activeSpace: SpaceItem?
   @ObservedObject var model: WebViewModel
   let focus: FocusBinding
 
@@ -35,9 +36,12 @@ struct Overlay: View {
         )
       
       
-      ForEach(spaces) { space in
-        Button(action: handleSpaceTapped) {
-          Text(space.name)
+      HStack {
+        ForEach(spaces) { space in
+          Button(action: { handleSpaceTapped(space) }) {
+            Text(space.name)
+              .bold(space == activeSpace)
+          }
         }
       }
 
@@ -53,8 +57,8 @@ struct Overlay: View {
     focus.wrappedValue = model.layout
   }
   
-  func handleSpaceTapped() {
-    
+  func handleSpaceTapped(_ space: SpaceItem) {
+    activeSpace = space
   }
 }
 
@@ -68,17 +72,15 @@ struct CustomTextFieldStyle: TextFieldStyle {
 }
 
 #Preview {
-//  @Previewable @State var layout: PaneLayout = .horizontal([
-//    .single,
-//    .vertical([.single, .single]),
-//  ])
-
   @Previewable @State var layout = LayoutItem()
+  @Previewable @State var activeSpace: SpaceItem?
+
   @FocusState var focus: LayoutItem?
 
   VStack {
     Overlay(
       isVisible: .constant(true),
+      activeSpace: $activeSpace,
       model: WebViewModel(link: "https://elegantchaos.com", layout: layout),
       focus: $focus
     )
