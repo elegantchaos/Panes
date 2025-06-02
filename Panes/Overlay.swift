@@ -8,7 +8,6 @@ import SwiftData
 import SwiftUI
 
 struct Overlay: View {
-  @Namespace var overlayFocusNamespace
   @Binding var isVisible: Bool
   @ObservedObject var model: WebViewModel
   let focus: FocusBinding
@@ -33,9 +32,10 @@ struct Overlay: View {
             .cornerRadius(8)
             .padding(.horizontal)
         )
-
     }
-    .focusScope(overlayFocusNamespace)
+    .onAppear {
+      overlayFocus = .url
+    }
   }
 
   func handleSubmit() {

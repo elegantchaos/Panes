@@ -70,7 +70,7 @@ struct PanesApp: App {
     context.insert(window)
     context.insert(space)
 
-    for link in ["elegantchaos.com", "apple.com", "bbc.co.uj", "github.com"] {
+    for link in ["elegantchaos.com", "apple.com", "bbc.co.uk", "github.com"] {
       if let url = URL(string: "https:/\(link)"), let name = link.split(separator: ".").first {
         let bookmark = BookmarkItem(name: String(name), url: url)
         context.insert(bookmark)
@@ -83,6 +83,6 @@ extension ModelContext {
   func containsInstanceOf<T: PersistentModel>(_ model: T.Type) throws -> Bool {
     var itemFetchDescriptor = FetchDescriptor<T>()
     itemFetchDescriptor.fetchLimit = 1
-    return try fetch(itemFetchDescriptor).count == 0
+    return try fetch(itemFetchDescriptor).count > 0
   }
 }

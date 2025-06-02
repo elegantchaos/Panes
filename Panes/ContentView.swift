@@ -39,17 +39,24 @@ struct ContentView: View {
             }
           }
       }
-      HStack {
+    }
+    .toolbar {
+      ToolbarItem(placement: .navigation) {
         Button(action: handleToggleOverlay) {
           Text("Overlay")
         }
         .keyboardShortcut(KeyEquivalent("l"), modifiers: [.shift, .command])
+      }
 
-        if let item = focus {
-          Text(models.model(for: item).label)
+      ToolbarItem {
+        ForEach(spaces) { space in
+          Button(action: handleSpaceTapped) {
+            Text(space.name)
+          }
         }
       }
     }
+
     .navigationTitle(focusLabel)
     .onChange(of: focus) {
       if let focus {
@@ -71,11 +78,14 @@ struct ContentView: View {
   }
 
   func handleToggleOverlay() {
-    if let item = focus {
+    if focus != nil {
       showOverlay.toggle()
     }
   }
 
+  func handleSpaceTapped() {
+    
+  }
   //  private func addItem() {
   //    withAnimation {
   //      let newItem = Item(timestamp: Date())
