@@ -23,10 +23,11 @@ struct ContentView: View {
   @Environment(\.modelContext) private var modelContext
   @EnvironmentObject var models: ModelStore
   @Query private var items: [LayoutItem]
+  @Query private var spaces: [SpaceItem]
 
   var body: some View {
     VStack {
-      if let root = items.first {
+      if let root {
         PaneContainer(focus: $focus, pane: root)
           .overlay {
             if showOverlay, let overlayModel {
@@ -66,7 +67,7 @@ struct ContentView: View {
   }
 
   var root: LayoutItem? {
-    items.first(where: { $0.kind == .root })
+    spaces.first?.windows.first?.root
   }
 
   func handleToggleOverlay() {

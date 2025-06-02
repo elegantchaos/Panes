@@ -19,11 +19,6 @@ struct PaneContainer: View {
   var body: some View {
     Group {
       switch pane.kind {
-      case .root:
-        if let root = pane.children.first {
-          PaneContainer(focus: focus, pane: root)
-        }
-
       case .leaf:
         PaneView(model: models.model(for: pane), focus: focus)
 

@@ -11,7 +11,6 @@ import SwiftData
 @Model
 final class LayoutItem {
   enum Kind: Codable {
-    case root
     case leaf
     case horizontal
     case vertical
