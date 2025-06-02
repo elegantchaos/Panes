@@ -8,13 +8,15 @@
 import SwiftData
 import SwiftUI
 
+typealias FocusBinding = FocusState<LayoutItem?>.Binding
+
 struct ContentView: View {
   //  @State var layout: PaneLayout
 
   @State var showOverlay = false
-  @FocusState var focus: PersistentIdentifier?
+  @FocusState var focus: LayoutItem?
   @State var overlayModel: WebViewModel?
-  
+
   init() {
   }
 
@@ -42,25 +44,24 @@ struct ContentView: View {
         }
         .keyboardShortcut(KeyEquivalent("l"), modifiers: [.shift, .command])
 
-        if let item = focussedItem {
+        if let item = focus {
           Text(models.model(for: item).label)
         }
       }
     }
-  }
-
-  var focussedItem: LayoutItem? {
-    guard let focus, let item = items.first(where: { $0.id == focus }) else {
-      return nil
+    .navigationTitle(focusLabel)
+    .onChange(of: focus) {
+      if let focus {
+        overlayModel = models.model(for: focus)
+      }
     }
-    return item
   }
 
   var focusLabel: String {
-    if let item = focussedItem {
-      return "\(item.kind) \(item.id.id)"
+    if let overlayModel {
+      return "Panes: \(overlayModel.label)"
     } else {
-      return ""
+      return "Panes"
     }
   }
 
@@ -69,33 +70,10 @@ struct ContentView: View {
   }
 
   func handleToggleOverlay() {
-    if let item = focussedItem {
-      if !showOverlay {
-        overlayModel = models.model(for: item)
-      }
+    if let item = focus {
       showOverlay.toggle()
     }
   }
-
-  func handleSplitRight() {
-    if let item = models.split(focussedItem, direction: .horizontal) {
-      focus = item.id
-    }
-  }
-
-  func handleSplitDown() {
-    if let item = models.split(focussedItem, direction: .vertical) {
-      focus = item.id
-    }
-  }
-
-  //  func handleSelectNext() {
-  //    if let current = focus {
-  //      focus = layout.nextSelectionAfter(current)
-  //    } else {
-  //      focus = layout.id
-  //    }
-  //  }
 
   //  private func addItem() {
   //    withAnimation {

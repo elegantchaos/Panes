@@ -11,7 +11,7 @@ struct Overlay: View {
   @Namespace var overlayFocusNamespace
   @Binding var isVisible: Bool
   @ObservedObject var model: WebViewModel
-  let focus: FocusState<PersistentIdentifier?>.Binding
+  let focus: FocusBinding
 
   enum OverlayFocus {
     case url
@@ -41,7 +41,7 @@ struct Overlay: View {
   func handleSubmit() {
     isVisible = false
     model.link = model.link
-    focus.wrappedValue = model.layout.id
+    focus.wrappedValue = model.layout
   }
 }
 
@@ -61,7 +61,7 @@ struct CustomTextFieldStyle: TextFieldStyle {
 //  ])
 
   @Previewable @State var layout = LayoutItem()
-  @FocusState var focus: PersistentIdentifier?
+  @FocusState var focus: LayoutItem?
 
   VStack {
     Overlay(

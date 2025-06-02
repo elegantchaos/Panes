@@ -20,13 +20,16 @@ class ModelStore: ObservableObject {
   }
 
   func split(_ item: LayoutItem?, direction: LayoutItem.Kind) -> LayoutItem? {
-    if let item, item.kind == .leaf {
+    
+    if let item, item.kind == .leaf, let context = item.modelContext {
       let originalLink = model(for: item).link
       let c1 = LayoutItem(.leaf)
       model(for: c1).link = originalLink
       let c2 = LayoutItem(.leaf)
       item.kind = direction
       item.children = [c1, c2]
+      context.insert(c1)
+      context.insert(c2)
       try? item.modelContext?.save()
       return c2
     }

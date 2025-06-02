@@ -9,7 +9,7 @@ import SwiftData
 import SwiftUI
 
 struct PaneContainer: View {
-  let focus: FocusState<PersistentIdentifier?>.Binding
+  let focus: FocusBinding
 
   @EnvironmentObject var models: ModelStore
   @Bindable var pane: LayoutItem

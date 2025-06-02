@@ -13,16 +13,16 @@ struct PaneView: View {
   @Environment(\.modelContext) private var modelContext
   @ObservedObject var model: WebViewModel
   @State var modifiers: EventModifiers = []
-  let focus: FocusState<PersistentIdentifier?>.Binding
+  let focus: FocusBinding
 
   var body: some View {
     let isOptionDown = modifiers.contains(.option)
     let isCommandDown = modifiers.contains(.command)
-    let isPanelSelected = focus.wrappedValue == model.layout.id
+    let isPanelSelected = focus.wrappedValue == model.layout
 
     return
       WebView(viewModel: model)
-      .focused(focus, equals: model.layout.id)
+      .focused(focus, equals: model.layout)
       .onModifierKeysChanged { before, after in
         modifiers = after
       }
@@ -30,11 +30,12 @@ struct PaneView: View {
         Text(model.label)
           .background(.white)
           .font(.footnote)
+          .padding()
       }
       .overlay {
-        if isPanelSelected && isCommandDown {
+        if isPanelSelected {
           Rectangle()
-            .stroke(Color.accentColor, lineWidth: 3)
+            .stroke(Color.accentColor.opacity(0.5), lineWidth: 3)
         }
       }
       .overlay(alignment: .topTrailing) {
@@ -47,7 +48,7 @@ struct PaneView: View {
           }
           .padding()
           .keyboardShortcut("|", modifiers: [.command])
-          .buttonStyle(.borderless)
+//          .buttonStyle(.borderless)
         }
       }
       .overlay(alignment: .topLeading) {
@@ -57,7 +58,7 @@ struct PaneView: View {
           }
           .padding()
           .keyboardShortcut(.delete, modifiers: [.command])
-          .buttonStyle(.borderless)
+//          .buttonStyle(.borderless)
         }
       }
 
@@ -68,7 +69,7 @@ struct PaneView: View {
           model.layout,
           direction: optionDown ? .vertical : .horizontal
         ) {
-          focus.wrappedValue = item.id
+          focus.wrappedValue = item
         }
       }
     }

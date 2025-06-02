@@ -2,22 +2,7 @@ import SwiftUI
 import SwiftData
 import WebKit
 
-class WebViewModel: ObservableObject {
-  @Published var link: String
-  @Published var didFinishLoading: Bool = false
-  @Published var pageTitle: String
-  @Published var layout: LayoutItem
 
-  init (link: String, layout: LayoutItem) {
-    self.link = link
-    self.pageTitle = ""
-    self.layout = layout
-  }
-  
-  var label: String {
-    pageTitle
-  }
-}
 
 struct WebView: NSViewRepresentable {
   @ObservedObject var viewModel: WebViewModel
@@ -33,6 +18,7 @@ struct WebView: NSViewRepresentable {
   }
   
   func updateNSView(_ webView: WKWebView, context: Context) {
+    print("updated")
     if viewModel.link != webView.url?.absoluteString ?? "" {
       webView.load(URLRequest(url: URL(string: viewModel.link)!))
     }
@@ -50,28 +36,27 @@ struct WebView: NSViewRepresentable {
       self.viewModel = viewModel
     }
     
-    public func webView(_: WKWebView, didFail: WKNavigation!, withError: Error) {
-      print("blah")
-
+    public func webView(_: WKWebView, didFail navigation: WKNavigation!, withError error: Error) {
+      print("failed \(String(describing: navigation)) with \(error)")
     }
     
-    public func webView(_: WKWebView, didFailProvisionalNavigation: WKNavigation!, withError: Error) {
-      print("blah")
-
+    public func webView(_: WKWebView, didFailProvisionalNavigation navigation: WKNavigation!, withError error: Error) {
+      print(" provisional failed \(String(describing: navigation)) with \(error)")
     }
     
     //After the webpage is loaded, assign the data in WebViewModel class
     public func webView(_ web: WKWebView, didFinish: WKNavigation!) {
-      self.viewModel.pageTitle = web.title!
-      self.viewModel.link = web.url?.absoluteString ?? ""
-      self.viewModel.didFinishLoading = true
+      viewModel.pageTitle = web.title!
+      viewModel.link = web.url?.absoluteString ?? ""
+      viewModel.didFinishLoading = true
     }
     
     public func webView(_ webView: WKWebView, didStartProvisionalNavigation navigation: WKNavigation!) {
-      print("blah")
+      print("started provisional \(String(describing: navigation))")
     }
     
     public func webView(_ webView: WKWebView, decidePolicyFor navigationAction: WKNavigationAction, decisionHandler: @escaping (WKNavigationActionPolicy) -> Void) {
+      print("decision for \(navigationAction)")
       decisionHandler(.allow)
     }
     
