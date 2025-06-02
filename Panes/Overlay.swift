@@ -8,6 +8,7 @@ import SwiftData
 import SwiftUI
 
 struct Overlay: View {
+  @Query private var spaces: [SpaceItem]
   @Binding var isVisible: Bool
   @ObservedObject var model: WebViewModel
   let focus: FocusBinding
@@ -32,6 +33,14 @@ struct Overlay: View {
             .cornerRadius(8)
             .padding(.horizontal)
         )
+      
+      
+      ForEach(spaces) { space in
+        Button(action: handleSpaceTapped) {
+          Text(space.name)
+        }
+      }
+
     }
     .onAppear {
       overlayFocus = .url
@@ -42,6 +51,10 @@ struct Overlay: View {
     isVisible = false
     model.link = model.link
     focus.wrappedValue = model.layout
+  }
+  
+  func handleSpaceTapped() {
+    
   }
 }
 

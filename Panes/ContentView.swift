@@ -37,23 +37,6 @@ struct ContentView: View {
           }
       }
     }
-    .toolbar {
-//      ToolbarItem(placement: .navigation) {
-//        Button(action: handleToggleOverlay) {
-//          Text("Overlay")
-//        }
-//        .keyboardShortcut(KeyEquivalent("l"), modifiers: [.shift, .command])
-//      }
-//
-      ToolbarItem {
-        ForEach(spaces) { space in
-          Button(action: handleSpaceTapped) {
-            Text(space.name)
-          }
-        }
-      }
-    }
-
     .navigationTitle(focusLabel)
     .onChange(of: focus) {
       if let focus {
@@ -80,23 +63,7 @@ struct ContentView: View {
     }
   }
 
-  func handleSpaceTapped() {
-    
-  }
-  //  private func addItem() {
-  //    withAnimation {
-  //      let newItem = Item(timestamp: Date())
-  //      modelContext.insert(newItem)
-  //    }
-  //  }
-  //
-  //  private func deleteItems(offsets: IndexSet) {
-  //    withAnimation {
-  //      for index in offsets {
-  //        modelContext.delete(items[index])
-  //      }
-  //    }
-  //  }
+
 }
 
 #Preview {

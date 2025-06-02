@@ -77,12 +77,20 @@ struct PanesApp: App {
   }
   
   static func initialiseData(context: ModelContext) {
-    let root = LayoutItem(.leaf, content: [])
-    let window = WindowItem(root: root)
-    let space = SpaceItem(name: "Home", windows: [window])
-    context.insert(root)
-    context.insert(window)
-    context.insert(space)
+    
+    let homeRoot = LayoutItem(.leaf, content: [])
+    let homeWindow = WindowItem(root: homeRoot)
+    let home = SpaceItem(name: "Home", windows: [homeWindow])
+    context.insert(homeRoot)
+    context.insert(homeWindow)
+    context.insert(home)
+
+    let workRoot = LayoutItem(.leaf, content: [])
+    let workWindow = WindowItem(root: workRoot)
+    let work = SpaceItem(name: "Work", windows: [workWindow])
+    context.insert(workRoot)
+    context.insert(workWindow)
+    context.insert(home)
 
     for link in ["elegantchaos.com", "apple.com", "bbc.co.uk", "github.com"] {
       if let url = URL(string: "https:/\(link)"), let name = link.split(separator: ".").first {
