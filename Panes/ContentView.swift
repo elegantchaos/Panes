@@ -13,12 +13,9 @@ typealias FocusBinding = FocusState<LayoutItem?>.Binding
 struct ContentView: View {
   //  @State var layout: PaneLayout
 
-  @State var showOverlay = false
+  @Binding var showOverlay: Bool
   @FocusState var focus: LayoutItem?
   @State var overlayModel: WebViewModel?
-
-  init() {
-  }
 
   @Environment(\.modelContext) private var modelContext
   @EnvironmentObject var models: ModelStore
@@ -41,13 +38,13 @@ struct ContentView: View {
       }
     }
     .toolbar {
-      ToolbarItem(placement: .navigation) {
-        Button(action: handleToggleOverlay) {
-          Text("Overlay")
-        }
-        .keyboardShortcut(KeyEquivalent("l"), modifiers: [.shift, .command])
-      }
-
+//      ToolbarItem(placement: .navigation) {
+//        Button(action: handleToggleOverlay) {
+//          Text("Overlay")
+//        }
+//        .keyboardShortcut(KeyEquivalent("l"), modifiers: [.shift, .command])
+//      }
+//
       ToolbarItem {
         ForEach(spaces) { space in
           Button(action: handleSpaceTapped) {
@@ -103,6 +100,7 @@ struct ContentView: View {
 }
 
 #Preview {
-  ContentView()
+  @Previewable @State var showOverlay: Bool = false
+  ContentView(showOverlay: $showOverlay)
     .modelContainer(for: LayoutItem.self, inMemory: true)
 }

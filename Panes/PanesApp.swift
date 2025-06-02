@@ -8,19 +8,33 @@
 import SwiftData
 import SwiftUI
 
+
 @main
 struct PanesApp: App {
   var sharedModelContainer = createModelContainer()
   let modelStore = ModelStore()
+  @State var showOverlay = false
 
   var body: some Scene {
     WindowGroup {
-      ContentView()
+      ContentView(showOverlay: $showOverlay)
+    }
+    .commands {
+      CommandMenu("Stuff") {
+        Button(action: handleToggleOverlay) {
+          Text("Overlay")
+        }
+        .keyboardShortcut(KeyEquivalent("l"), modifiers: [.shift, .command])
+      }
     }
     .environmentObject(modelStore)
     .modelContainer(sharedModelContainer)
   }
 
+  func handleToggleOverlay() {
+      showOverlay.toggle()
+  }
+  
   static let modelTypes: [any PersistentModel.Type] = [
     BookmarkItem.self,
     LayoutItem.self,
