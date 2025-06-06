@@ -7,7 +7,6 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		2288730A2DE9D1A1001DBE93 /* SplitView in Frameworks */ = {isa = PBXBuildFile; productRef = 228873092DE9D1A1001DBE93 /* SplitView */; };
 		229E59A32DF2E42700B255C2 /* PanesCore in Frameworks */ = {isa = PBXBuildFile; productRef = 229E59A22DF2E42700B255C2 /* PanesCore */; };
 /* End PBXBuildFile section */
 
@@ -58,7 +57,6 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				2288730A2DE9D1A1001DBE93 /* SplitView in Frameworks */,
 				229E59A32DF2E42700B255C2 /* PanesCore in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -121,7 +119,6 @@
 			);
 			name = Panes;
 			packageProductDependencies = (
-				228873092DE9D1A1001DBE93 /* SplitView */,
 				229E59A22DF2E42700B255C2 /* PanesCore */,
 			);
 			productName = Panes;
@@ -208,7 +205,6 @@
 			mainGroup = 228872B52DE9A081001DBE93;
 			minimizedProjectReferenceProxies = 1;
 			packageReferences = (
-				228873082DE9D1A1001DBE93 /* XCRemoteSwiftPackageReference "SplitView" */,
 				229E59A12DF2E42700B255C2 /* XCLocalSwiftPackageReference "PanesCore" */,
 			);
 			preferredProjectObjectVersion = 77;
@@ -579,23 +575,7 @@
 		};
 /* End XCLocalSwiftPackageReference section */
 
-/* Begin XCRemoteSwiftPackageReference section */
-		228873082DE9D1A1001DBE93 /* XCRemoteSwiftPackageReference "SplitView" */ = {
-			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/stevengharris/SplitView";
-			requirement = {
-				kind = upToNextMajorVersion;
-				minimumVersion = 3.5.3;
-			};
-		};
-/* End XCRemoteSwiftPackageReference section */
-
 /* Begin XCSwiftPackageProductDependency section */
-		228873092DE9D1A1001DBE93 /* SplitView */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = 228873082DE9D1A1001DBE93 /* XCRemoteSwiftPackageReference "SplitView" */;
-			productName = SplitView;
-		};
 		229E59A22DF2E42700B255C2 /* PanesCore */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = PanesCore;

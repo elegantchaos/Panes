@@ -6,7 +6,9 @@
 import SwiftData
 import SwiftUI
 import PanesCore
+import Logger
 
+let applicationChannel = Channel("Application")
 
 @main
 struct PanesApp: App {
@@ -14,6 +16,10 @@ struct PanesApp: App {
   let modelStore = ModelStore()
   @State var showOverlay = false
 
+  init() {
+    applicationChannel.log("Application started")
+  }
+  
   var body: some Scene {
     WindowGroup {
       ContentView(showOverlay: $showOverlay)
@@ -31,6 +37,7 @@ struct PanesApp: App {
   }
 
   func handleToggleOverlay() {
+    applicationChannel.log("Toggling overlay")
       showOverlay.toggle()
   }
 }

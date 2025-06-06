@@ -6,6 +6,7 @@
 import Foundation
 import SwiftData
 import SwiftUI
+import LoggerUI
 
 struct OverlayView: View {
   @Binding var isVisible: Bool
@@ -20,6 +21,7 @@ struct OverlayView: View {
   @FocusState var overlayFocus: OverlayFocus?
   @State var link: String
   @State var selection: TextSelection?
+  @State var showChannels = false
   
   var body: some View {
     VStack {
@@ -28,22 +30,39 @@ struct OverlayView: View {
         .onSubmit(handleSubmit)
         .textFieldStyle(CustomTextFieldStyle())
         .padding()
-        .frame(minWidth: 100, maxWidth: 1000)
         .background(
           Rectangle()
             .fill(Color.gray.opacity(0.2))
             .cornerRadius(8)
             .padding(.horizontal)
         )
+        
 
       HStack {
         SpacesView(activeSpace: $activeSpace)
+        Spacer()
         BookmarksView(activeSpace: $activeSpace)
+        Spacer()
+        Button(action: handleShowChannels) {
+          Image(systemName: "gear")
+        }
       }
+      .padding()
     }
+    .frame(minWidth: 100, maxWidth: 1000)
     .onAppear(perform: handleAppear)
+    .sheet(isPresented: $showChannels) {
+      LoggerChannelsView()
+        .frame(width: 600, height: 300)
+    }
   }
 
+  func handleShowChannels() {
+    withAnimation {
+      showChannels.toggle()
+    }
+  }
+  
   @MainActor func handleAppear() {
     overlayFocus = .url
     DispatchQueue.main.asyncAfter(deadline: .now() + 0.1, execute: selectURLBody)

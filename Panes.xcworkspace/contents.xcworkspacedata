@@ -4,4 +4,7 @@
    <FileRef
       location = "group:Panes.xcodeproj">
    </FileRef>
+   <FileRef
+      location = "container:../Logger">
+   </FileRef>
 </Workspace>

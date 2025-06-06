@@ -1,6 +1,9 @@
+import Logger
 import SwiftData
 import SwiftUI
 import WebKit
+
+let webviewChannel = Channel("WebView")
 
 struct WebView: NSViewRepresentable {
   @ObservedObject var viewModel: WebViewModel
@@ -8,15 +11,15 @@ struct WebView: NSViewRepresentable {
   private let webView: WKWebView = WKWebView()
 
 
-  func makeNSView(context: Context) -> WKWebView {
+  func makeNSView(context: Self.Context) -> WKWebView {
     webView.navigationDelegate = context.coordinator
     webView.uiDelegate = context.coordinator as? WKUIDelegate
     webView.load(URLRequest(url: viewModel.url))
     return webView
   }
 
-  func updateNSView(_ webView: WKWebView, context: Context) {
-    print("updated")
+  func updateNSView(_ webView: WKWebView, context: Self.Context) {
+    webviewChannel.log("updated")
     if viewModel.url != webView.url {
       webView.load(URLRequest(url: viewModel.url))
     }
@@ -35,11 +38,11 @@ struct WebView: NSViewRepresentable {
     }
 
     public func webView(_: WKWebView, didFail navigation: WKNavigation!, withError error: Error) {
-      print("failed \(String(describing: navigation)) with \(error)")
+      webviewChannel.log("failed \(String(describing: navigation)) with \(error)")
     }
 
     public func webView(_: WKWebView, didFailProvisionalNavigation navigation: WKNavigation!, withError error: Error) {
-      print(" provisional failed \(String(describing: navigation)) with \(error)")
+      webviewChannel.log(" provisional failed \(String(describing: navigation)) with \(error)")
     }
 
     public func webView(_ web: WKWebView, didFinish: WKNavigation!) {
@@ -49,11 +52,11 @@ struct WebView: NSViewRepresentable {
     }
 
     public func webView(_ webView: WKWebView, didStartProvisionalNavigation navigation: WKNavigation!) {
-      print("started provisional \(String(describing: navigation))")
+      webviewChannel.log("started provisional \(String(describing: navigation))")
     }
 
     public func webView(_ webView: WKWebView, decidePolicyFor navigationAction: WKNavigationAction, decisionHandler: @escaping @MainActor @Sendable (WKNavigationActionPolicy) -> Void) {
-      print("decision for \(navigationAction)")
+      webviewChannel.log("decision for \(navigationAction)")
       decisionHandler(.allow)
     }
 

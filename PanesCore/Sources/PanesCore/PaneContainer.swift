@@ -23,34 +23,34 @@ struct PaneContainer: View {
         PaneView(model: models.model(for: pane), focus: focus)
 
       case .horizontal:
-        if let left = pane.children.first, let right = pane.children.last {
-          HSplit(
-            left: {
-              PaneContainer(focus: focus, pane: left)
-            },
-            right: { PaneContainer(focus: focus, pane: right) }
-          )
-        } else {
+//        if let left = pane.children.first, let right = pane.children.last {
+//          HSplit(
+//            left: {
+//              PaneContainer(focus: focus, pane: left)
+//            },
+//            right: { PaneContainer(focus: focus, pane: right) }
+//          )
+//        } else {
           HStack {
             ForEach(pane.children) { pane in
               PaneContainer(focus: focus, pane: pane)
             }
           }
-        }
+//        }
 
       case .vertical:
-        if let top = pane.children.first, let bottom = pane.children.last {
-          VSplit(
-            top: { PaneContainer(focus: focus, pane: top) },
-            bottom: { PaneContainer(focus: focus, pane: bottom) }
-          )
-        } else {
+//        if let top = pane.children.first, let bottom = pane.children.last {
+//          VSplit(
+//            top: { PaneContainer(focus: focus, pane: top) },
+//            bottom: { PaneContainer(focus: focus, pane: bottom) }
+//          )
+//        } else {
           VStack {
             ForEach(pane.children) { pane in
               PaneContainer(focus: focus, pane: pane)
             }
           }
-        }
+//        }
 
       }
 
