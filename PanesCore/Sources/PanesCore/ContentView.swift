@@ -10,7 +10,7 @@ import SwiftUI
 
 typealias FocusBinding = FocusState<LayoutItem?>.Binding
 
-struct ContentView: View {
+public struct ContentView: View {
   //  @State var layout: PaneLayout
 
   @Binding var showOverlay: Bool
@@ -23,13 +23,17 @@ struct ContentView: View {
   @Query private var items: [LayoutItem]
   @Query private var spaces: [SpaceItem]
 
-  var body: some View {
+  public init(showOverlay: Binding<Bool>) {
+    self._showOverlay = showOverlay
+  }
+  
+  public var body: some View {
     VStack {
       if let root {
         PaneContainer(focus: $focus, pane: root)
           .overlay {
             if showOverlay, let overlayModel {
-              Overlay(
+              OverlayView(
                 isVisible: $showOverlay,
                 activeSpace: $activeSpace,
                 model: overlayModel,

@@ -6,25 +6,28 @@
 import Foundation
 import SwiftData
 
-class ModelStore: ObservableObject {
+public class ModelStore: ObservableObject {
   var models: [PersistentIdentifier:WebViewModel] = [:]
 
-  func model(for layout: LayoutItem) -> WebViewModel {
+  public init() {
+  }
+  
+  public func model(for layout: LayoutItem) -> WebViewModel {
     if let model = models[layout.id] {
       return model
     }
     
-    let newModel = WebViewModel(link: "https://elegantchaos.com", layout: layout)
+    let newModel = WebViewModel(URL(link: "elegantchaos.com"), layout: layout)
     models[layout.id] = newModel
     return newModel
   }
 
-  func split(_ item: LayoutItem?, direction: LayoutItem.Kind) -> LayoutItem? {
+  public func split(_ item: LayoutItem?, direction: LayoutItem.Kind) -> LayoutItem? {
     
     if let item, item.kind == .leaf, let context = item.modelContext {
-      let originalLink = model(for: item).link
+      let originalLink = model(for: item).url
       let c1 = LayoutItem(.leaf)
-      model(for: c1).link = originalLink
+      model(for: c1).url = originalLink
       let c2 = LayoutItem(.leaf)
       item.kind = direction
       item.children = [c1, c2]
@@ -37,7 +40,7 @@ class ModelStore: ObservableObject {
     return nil
   }
   
-  func delete(_ item: LayoutItem) {
+  public func delete(_ item: LayoutItem) {
     models.removeValue(forKey: item.id)
     item.modelContext?.delete(item)
     try? item.modelContext?.save()

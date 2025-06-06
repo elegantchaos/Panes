@@ -7,8 +7,7 @@ import Foundation
 import SwiftData
 import SwiftUI
 
-struct Overlay: View {
-  @Query private var spaces: [SpaceItem]
+struct OverlayView: View {
   @Binding var isVisible: Bool
   @Binding var activeSpace: SpaceItem?
   @ObservedObject var model: WebViewModel
@@ -22,7 +21,7 @@ struct Overlay: View {
 
   var body: some View {
     VStack {
-      TextField("URL", text: $model.link)
+      TextField("URL", text: urlBinding)
         .focused($overlayFocus, equals: .url)
         .onSubmit(handleSubmit)
         .textFieldStyle(CustomTextFieldStyle())
@@ -34,16 +33,8 @@ struct Overlay: View {
             .cornerRadius(8)
             .padding(.horizontal)
         )
-      
-      
-      HStack {
-        ForEach(spaces) { space in
-          Button(action: { handleSpaceTapped(space) }) {
-            Text(space.name)
-              .bold(space == activeSpace)
-          }
-        }
-      }
+
+      SpacesView(activeSpace: $activeSpace)
 
     }
     .onAppear {
@@ -53,12 +44,19 @@ struct Overlay: View {
 
   func handleSubmit() {
     isVisible = false
-    model.link = model.link
     focus.wrappedValue = model.layout
   }
-  
-  func handleSpaceTapped(_ space: SpaceItem) {
-    activeSpace = space
+
+  var urlBinding: Binding<String> {
+    Binding(
+      get: { model.url.absoluteString },
+      set: { newValue in
+        if let url = URL(string: newValue) {
+          model.url = url
+        }
+      }
+    )
+
   }
 }
 
@@ -78,10 +76,10 @@ struct CustomTextFieldStyle: TextFieldStyle {
   @FocusState var focus: LayoutItem?
 
   VStack {
-    Overlay(
+    OverlayView(
       isVisible: .constant(true),
       activeSpace: $activeSpace,
-      model: WebViewModel(link: "https://elegantchaos.com", layout: layout),
+      model: WebViewModel(URL(link: "https://elegantchaos.com"), layout: layout),
       focus: $focus
     )
   }

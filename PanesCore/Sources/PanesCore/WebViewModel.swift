@@ -5,19 +5,19 @@
 
 import Foundation
 
-class WebViewModel: ObservableObject {
-  @Published var link: String
+public class WebViewModel: ObservableObject {
+  @Published var url: URL
   @Published var didFinishLoading: Bool = false
   @Published var pageTitle: String
   @Published var layout: LayoutItem
 
-  init (link: String, layout: LayoutItem) {
-    self.link = link
+  init (_ url: URL, layout: LayoutItem) {
+    self.url = url
     self.pageTitle = ""
     self.layout = layout
   }
   
   var label: String {
-    pageTitle.isEmpty ? link : pageTitle
+    pageTitle.isEmpty ? url.absoluteString : pageTitle
   }
 }

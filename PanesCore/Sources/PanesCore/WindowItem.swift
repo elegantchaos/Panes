@@ -6,12 +6,10 @@
 import Foundation
 import SwiftData
 
-@Model final class SpaceItem {
-  var name: String
-  var windows: [WindowItem]
+@Model public final class WindowItem {
+  var root: LayoutItem
   
-  init(name: String, windows: [WindowItem]) {
-    self.name = name
-    self.windows = windows
+  internal init(root: LayoutItem) {
+    self.root = root
   }
 }

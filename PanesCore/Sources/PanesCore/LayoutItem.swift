@@ -1,16 +1,13 @@
-//
-//  Item.swift
-//  Panes
-//
+// -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
 //  Created by Sam Deane on 30/05/2025.
-//
+//  Copyright © 2025 Elegant Chaos Limited. All rights reserved.
+// -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
 
 import Foundation
 import SwiftData
 
-@Model
-final class LayoutItem {
-  enum Kind: Codable {
+@Model public final class LayoutItem {
+  public enum Kind: Codable {
     case leaf
     case horizontal
     case vertical

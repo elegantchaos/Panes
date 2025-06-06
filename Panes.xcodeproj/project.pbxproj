@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		2288730A2DE9D1A1001DBE93 /* SplitView in Frameworks */ = {isa = PBXBuildFile; productRef = 228873092DE9D1A1001DBE93 /* SplitView */; };
+		229E59A32DF2E42700B255C2 /* PanesCore in Frameworks */ = {isa = PBXBuildFile; productRef = 229E59A22DF2E42700B255C2 /* PanesCore */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -31,6 +32,7 @@
 		228872BE2DE9A081001DBE93 /* Panes.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Panes.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		228872CE2DE9A083001DBE93 /* PanesTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = PanesTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		228872D82DE9A083001DBE93 /* PanesUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = PanesUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		229E59A02DF2E31600B255C2 /* PanesCore */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = PanesCore; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
@@ -57,6 +59,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				2288730A2DE9D1A1001DBE93 /* SplitView in Frameworks */,
+				229E59A32DF2E42700B255C2 /* PanesCore in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -80,6 +83,7 @@
 		228872B52DE9A081001DBE93 = {
 			isa = PBXGroup;
 			children = (
+				229E59A02DF2E31600B255C2 /* PanesCore */,
 				228872C02DE9A081001DBE93 /* Panes */,
 				228872D12DE9A083001DBE93 /* PanesTests */,
 				228872DB2DE9A083001DBE93 /* PanesUITests */,
@@ -118,6 +122,7 @@
 			name = Panes;
 			packageProductDependencies = (
 				228873092DE9D1A1001DBE93 /* SplitView */,
+				229E59A22DF2E42700B255C2 /* PanesCore */,
 			);
 			productName = Panes;
 			productReference = 228872BE2DE9A081001DBE93 /* Panes.app */;
@@ -204,6 +209,7 @@
 			minimizedProjectReferenceProxies = 1;
 			packageReferences = (
 				228873082DE9D1A1001DBE93 /* XCRemoteSwiftPackageReference "SplitView" */,
+				229E59A12DF2E42700B255C2 /* XCLocalSwiftPackageReference "PanesCore" */,
 			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = 228872BF2DE9A081001DBE93 /* Products */;
@@ -566,6 +572,13 @@
 		};
 /* End XCConfigurationList section */
 
+/* Begin XCLocalSwiftPackageReference section */
+		229E59A12DF2E42700B255C2 /* XCLocalSwiftPackageReference "PanesCore" */ = {
+			isa = XCLocalSwiftPackageReference;
+			relativePath = PanesCore;
+		};
+/* End XCLocalSwiftPackageReference section */
+
 /* Begin XCRemoteSwiftPackageReference section */
 		228873082DE9D1A1001DBE93 /* XCRemoteSwiftPackageReference "SplitView" */ = {
 			isa = XCRemoteSwiftPackageReference;
@@ -582,6 +595,10 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 228873082DE9D1A1001DBE93 /* XCRemoteSwiftPackageReference "SplitView" */;
 			productName = SplitView;
+		};
+		229E59A22DF2E42700B255C2 /* PanesCore */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = PanesCore;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};
