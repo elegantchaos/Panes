@@ -37,7 +37,8 @@ public struct ContentView: View {
                 isVisible: $showOverlay,
                 activeSpace: $activeSpace,
                 model: overlayModel,
-                focus: $focus
+                focus: $focus,
+                link: overlayModel.url.absoluteString
               )
             }
           }

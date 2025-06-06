@@ -10,7 +10,7 @@ import SwiftData
 struct BookmarksView: View {
   @Environment(\.modelContext) private var modelContext
   @Query private var bookmarks: [BookmarkItem]
-  @Binding var activeSpace: BookmarkItem?
+  @Binding var activeSpace: SpaceItem?
   
   var body: some View {
     HStack {

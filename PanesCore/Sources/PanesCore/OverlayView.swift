@@ -18,10 +18,12 @@ struct OverlayView: View {
   }
 
   @FocusState var overlayFocus: OverlayFocus?
-
+  @State var link: String
+  @State var selection: TextSelection?
+  
   var body: some View {
     VStack {
-      TextField("URL", text: urlBinding)
+      TextField("URL", text: $link, selection: $selection)
         .focused($overlayFocus, equals: .url)
         .onSubmit(handleSubmit)
         .textFieldStyle(CustomTextFieldStyle())
@@ -34,30 +36,41 @@ struct OverlayView: View {
             .padding(.horizontal)
         )
 
-      SpacesView(activeSpace: $activeSpace)
-
+      HStack {
+        SpacesView(activeSpace: $activeSpace)
+        BookmarksView(activeSpace: $activeSpace)
+      }
     }
-    .onAppear {
-      overlayFocus = .url
-    }
+    .onAppear(perform: handleAppear)
   }
 
+  @MainActor func handleAppear() {
+    overlayFocus = .url
+    DispatchQueue.main.asyncAfter(deadline: .now() + 0.1, execute: selectURLBody)
+  }
+  
+  func handleCommit() {
+    
+  }
+  
+  func selectURLBody() {
+    let text = model.url.absoluteString
+    var start = text.index(text.startIndex, offsetBy: model.url.scheme?.count ?? 0)
+    if text[start] == ":" {
+      start = text.index(after: start) // Skip over the colon after the scheme
+    }
+    while text[start] == "/" {
+      start = text.index(after: start) // Skip over any leading slashes
+    }
+    selection = .init(range: start..<text.endIndex)
+  }
+  
   func handleSubmit() {
     isVisible = false
     focus.wrappedValue = model.layout
+    model.url = URL(string: link) ?? model.url
   }
 
-  var urlBinding: Binding<String> {
-    Binding(
-      get: { model.url.absoluteString },
-      set: { newValue in
-        if let url = URL(string: newValue) {
-          model.url = url
-        }
-      }
-    )
-
-  }
 }
 
 struct CustomTextFieldStyle: TextFieldStyle {
@@ -66,6 +79,8 @@ struct CustomTextFieldStyle: TextFieldStyle {
       .padding(.horizontal)
       .font(.title)
       .backgroundStyle(.clear)
+      .disableAutocorrection(true)
+      .textContentType(.URL)
   }
 }
 
@@ -80,7 +95,8 @@ struct CustomTextFieldStyle: TextFieldStyle {
       isVisible: .constant(true),
       activeSpace: $activeSpace,
       model: WebViewModel(URL(link: "https://elegantchaos.com"), layout: layout),
-      focus: $focus
+      focus: $focus,
+      link: "https://elegantchaos.com"
     )
   }
   .frame(width: 640, height: 480)
