@@ -5,7 +5,7 @@
 
 import Foundation
 import SwiftData
-import SwiftUICore
+import SwiftUI
 //
 //
 //struct PaneLayout: Identifiable {
