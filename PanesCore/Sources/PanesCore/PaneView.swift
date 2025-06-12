@@ -10,7 +10,6 @@ import SwiftUI
 
 struct PaneView: View {
   @EnvironmentObject var models: ModelStore
-  @Environment(\.modelContext) private var modelContext
   @ObservedObject var model: WebViewModel
   @State var modifiers: EventModifiers = []
   let focus: FocusBinding
@@ -81,4 +80,15 @@ struct PaneView: View {
     }
 
   }
+}
+
+#Preview {
+  @Previewable @State var showOverlay: Bool = false
+  @Previewable @State var pane = LayoutItem()
+  @Previewable @State var models = ModelStore()
+  @Previewable @FocusState var focus: LayoutItem?
+
+  PaneView(model: models.model(for: pane), focus: $focus)
+    .environmentObject(models)
+//    .modelContainer(for: LayoutItem.self, inMemory: true)
 }
