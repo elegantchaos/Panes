@@ -7,17 +7,17 @@ import Foundation
 import SwiftData
 
 public class ModelStore: ObservableObject {
-  var models: [PersistentIdentifier:WebViewModel] = [:]
+  var models: [PersistentIdentifier:WebSession] = [:]
 
   public init() {
   }
   
-  public func model(for layout: LayoutItem) -> WebViewModel {
+  public func model(for layout: LayoutItem) -> WebSession {
     if let model = models[layout.id] {
       return model
     }
     
-    let newModel = WebViewModel(URL(link: "elegantchaos.com"), layout: layout)
+    let newModel = WebSession(URL(link: "elegantchaos.com"), layout: layout)
     models[layout.id] = newModel
     return newModel
   }

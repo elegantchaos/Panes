@@ -10,18 +10,18 @@ import SwiftUI
 
 struct PaneView: View {
   @EnvironmentObject var models: ModelStore
-  @ObservedObject var model: WebViewModel
+  @ObservedObject var model: WebSession
   @State var modifiers: EventModifiers = []
   let focus: FocusBinding
 
   var body: some View {
     let isOptionDown = modifiers.contains(.option)
     let isCommandDown = modifiers.contains(.command)
-    let isPanelSelected = focus.wrappedValue == model.layout
+    let isPanelSelected = focus.wrappedValue == model.position
 
     return
       WebView(viewModel: model)
-      .focused(focus, equals: model.layout)
+      .focused(focus, equals: model.position)
       .onModifierKeysChanged { before, after in
         modifiers = after
       }
@@ -65,7 +65,7 @@ struct PaneView: View {
       let optionDown = modifiers.contains(.option)
       withAnimation {
         if let item = models.split(
-          model.layout,
+          model.position,
           direction: optionDown ? .vertical : .horizontal
         ) {
           focus.wrappedValue = item
@@ -75,7 +75,7 @@ struct PaneView: View {
 
     func handleDelete() {
       withAnimation {
-        models.delete(model.layout)
+        models.delete(model.position)
       }
     }
 

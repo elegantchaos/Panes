@@ -11,7 +11,7 @@ import SwiftUI
 //struct PaneLayout: Identifiable {
 //  let id = UUID()
 //  let kind: Kind
-//  let model: WebViewModel
+//  let model: WebSession
 //  let children: [PaneLayout]
 //  
 //  enum Kind {
@@ -23,7 +23,7 @@ import SwiftUI
 //  init(_ layout: Kind = .single, content: [PaneLayout] = []) {
 //    self.kind = layout
 //    self.children = content
-//    self.model = WebViewModel(link: "https://elegantchaos.com")
+//    self.model = WebSession(link: "https://elegantchaos.com")
 //  }
 //  
 //  static var single: PaneLayout {

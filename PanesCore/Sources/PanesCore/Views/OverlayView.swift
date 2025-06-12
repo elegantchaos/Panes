@@ -11,7 +11,7 @@ import LoggerUI
 struct OverlayView: View {
   @Binding var isVisible: Bool
   @Binding var activeSpace: SpaceItem?
-  @ObservedObject var model: WebViewModel
+  @ObservedObject var model: WebSession
   let focus: FocusBinding
 
   enum OverlayFocus {
@@ -86,7 +86,7 @@ struct OverlayView: View {
   
   func handleSubmit() {
     isVisible = false
-    focus.wrappedValue = model.layout
+    focus.wrappedValue = model.position
     model.url = URL(string: link) ?? model.url
   }
 
@@ -113,7 +113,7 @@ struct CustomTextFieldStyle: TextFieldStyle {
     OverlayView(
       isVisible: .constant(true),
       activeSpace: $activeSpace,
-      model: WebViewModel(URL(link: "https://elegantchaos.com"), layout: layout),
+      model: WebSession(URL(link: "https://elegantchaos.com"), layout: layout),
       focus: $focus,
       link: "https://elegantchaos.com"
     )

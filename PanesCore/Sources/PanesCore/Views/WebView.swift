@@ -6,7 +6,7 @@ import WebKit
 let webviewChannel = Channel("WebView")
 
 struct WebView: NSViewRepresentable {
-  @ObservedObject var viewModel: WebViewModel
+  @ObservedObject var viewModel: WebSession
 
   private let webView: WKWebView = WKWebView()
 
@@ -30,10 +30,10 @@ struct WebView: NSViewRepresentable {
   }
 
   class Coordinator: NSObject, WKNavigationDelegate {
-    private var viewModel: WebViewModel
+    private var viewModel: WebSession
 
-    init(_ viewModel: WebViewModel) {
-      //Initialise the WebViewModel
+    init(_ viewModel: WebSession) {
+      //Initialise the WebSession
       self.viewModel = viewModel
     }
 
@@ -46,9 +46,9 @@ struct WebView: NSViewRepresentable {
     }
 
     public func webView(_ web: WKWebView, didFinish: WKNavigation!) {
-      viewModel.pageTitle = web.title ?? viewModel.pageTitle
+      viewModel.title = web.title ?? viewModel.title
       viewModel.url = web.url ?? viewModel.url
-      viewModel.didFinishLoading = true
+      viewModel.state = .loaded
     }
 
     public func webView(_ webView: WKWebView, didStartProvisionalNavigation navigation: WKNavigation!) {

@@ -15,7 +15,7 @@ public struct ContentView: View {
 
   @Binding var showOverlay: Bool
   @FocusState var focus: LayoutItem?
-  @State var overlayModel: WebViewModel?
+  @State var overlayModel: WebSession?
   @State var activeSpace: SpaceItem?
 
   @Environment(\.modelContext) private var modelContext
